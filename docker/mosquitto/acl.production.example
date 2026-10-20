@@ -1,0 +1,17 @@
+# Production ACL template. Username for a vehicle must be that vehicle id.
+# Do not use the development demo-device wildcard.
+
+user backend
+topic read vehicles/+/telemetry
+topic read vehicles/+/safety
+topic read vehicles/+/cabin
+topic read vehicles/+/device-status
+topic read vehicles/+/sos
+topic write vehicles/+/commands
+
+pattern write vehicles/%u/telemetry
+pattern write vehicles/%u/safety
+pattern write vehicles/%u/cabin
+pattern write vehicles/%u/device-status
+pattern write vehicles/%u/sos
+pattern read vehicles/%u/commands

@@ -1,0 +1,11 @@
+node_modules/
+dist/
+coverage/
+.env
+.env.local
+*.log
+.test-mongo-uri
+docker/mosquitto/generated/
+docker/mosquitto/passwd
+.DS_Store
+*.tsbuildinfo

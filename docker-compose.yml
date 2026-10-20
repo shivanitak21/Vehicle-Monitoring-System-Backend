@@ -1,0 +1,49 @@
+services:
+  mongo:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  mosquitto:
+    image: eclipse-mosquitto:2
+    ports:
+      - "1883:1883"
+    environment:
+      MQTT_BACKEND_USERNAME: backend
+      MQTT_BACKEND_PASSWORD: dev-backend-mqtt-password
+      MQTT_DEVICE_USERNAME: demo-device
+      MQTT_DEVICE_PASSWORD: dev-device-mqtt-password
+    volumes:
+      - ./docker/mosquitto/mosquitto.conf:/opt/source/mosquitto.conf:ro
+      - ./docker/mosquitto/acl:/opt/source/acl:ro
+      - ./docker/mosquitto/entrypoint.sh:/entrypoint.sh:ro
+      - mosquitto_data:/mosquitto/data
+      - mosquitto_log:/mosquitto/log
+    entrypoint: ["/bin/sh", "/entrypoint.sh"]
+
+  backend:
+    build: .
+    env_file:
+      - .env
+    environment:
+      MONGODB_URI: mongodb://mongo:27017/vehicle_safety
+      MQTT_URL: mqtt://mosquitto:1883
+    ports:
+      - "4000:4000"
+    depends_on:
+      mongo:
+        condition: service_healthy
+      mosquitto:
+        condition: service_started
+
+volumes:
+  mongo_data:
+  mosquitto_data:
+  mosquitto_log:

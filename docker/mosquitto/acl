@@ -1,0 +1,19 @@
+# Development ACL.
+# demo-device may publish telemetry for vehicles while the API checks the device record.
+# Replace this file with acl.production.example before any shared deployment.
+
+user backend
+topic read vehicles/+/telemetry
+topic read vehicles/+/safety
+topic read vehicles/+/cabin
+topic read vehicles/+/device-status
+topic read vehicles/+/sos
+topic write vehicles/+/commands
+
+user demo-device
+topic write vehicles/+/telemetry
+topic write vehicles/+/safety
+topic write vehicles/+/cabin
+topic write vehicles/+/device-status
+topic write vehicles/+/sos
+topic read vehicles/+/commands
